@@ -1,5 +1,4 @@
 defmodule Adventofcode2021.Day01.Puzzle2 do
-
   @default_path "lib/day01/input.txt"
 
   def analyze_depth_increases(path \\ @default_path) do
