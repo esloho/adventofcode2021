@@ -3,7 +3,7 @@ defmodule Adventofcode2021.Day01.Puzzle2 do
 
   def analyze_depth_increases(path \\ @default_path) do
     path
-    |> read_input()
+    |> File.stream!([:utf8], :line)
     |> convert_input()
     |> count_depth_increases()
   end
@@ -21,10 +21,6 @@ defmodule Adventofcode2021.Day01.Puzzle2 do
     |> Enum.map(&Enum.sum/1)
     |> Enum.reduce({0, -1}, &detect_increased/2)
     |> elem(0)
-  end
-
-  defp read_input(path) do
-    File.stream!(path, [:utf8], :line)
   end
 
   defp detect_increased(measure, {count, -1}) do
