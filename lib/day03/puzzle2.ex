@@ -31,23 +31,23 @@ defmodule Adventofcode2021.Day03.Puzzle2 do
     |> String.to_integer(2)
   end
 
-  def find_rating(list_numbers, pos, search_func) do
-    filter_char = get_filter_char_at(list_numbers, pos, search_func)
+  def find_rating(list_numbers, pos, search_fun) do
+    filter_char = get_filter_char_at(list_numbers, pos, search_fun)
 
     filtered_list =
       list_numbers
       |> Enum.filter(fn number -> Enum.at(number, pos) == filter_char end)
 
-    find_rating(filtered_list, pos + 1, search_func)
+    find_rating(filtered_list, pos + 1, search_fun)
   end
 
-  def get_filter_char_at(list_numbers, pos, search_func) do
+  def get_filter_char_at(list_numbers, pos, search_fun) do
     list_numbers
     |> Enum.zip()
     |> Enum.map(&Tuple.to_list/1)
     |> Enum.at(pos)
     |> Enum.frequencies()
-    |> search_func.()
+    |> search_fun.()
   end
 
   def get_most_common(freq) do

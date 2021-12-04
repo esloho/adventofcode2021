@@ -1,0 +1,109 @@
+# Day 4
+
+## Puzzle 1
+
+```elixir
+input = """
+7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+
+22 13 17 11  0
+ 8  2 23  4 24
+21  9 14 16  7
+ 6 10  3 18  5
+ 1 12 20 15 19
+
+ 3 15  0  2 22
+ 9 18 13 17  5
+19  8  7 25 23
+20 11 10 24  4
+14 21 16 12  6
+
+14 21 17 24  4
+10 16 15  9 19
+18  8 23 26 20
+22 11 13  6  5
+ 2  0 12  3  7
+"""
+
+defmodule Bingo do
+  def find_winner({bingo_numbers, boards}) do
+  end
+
+  def mark_board(board, number) do
+    Enum.reduce(board, [], fn row, acc ->
+      marked_row =
+        Enum.map(row, fn
+          ^number -> "*"
+          el -> el
+        end)
+
+      [marked_row | acc]
+    end)
+  end
+end
+
+[[bingo_numbers] | boards] =
+  input
+  |> String.splitter("\n", trim: true)
+  |> Stream.chunk_every(1)
+  # |> Stream.map(&String.split(&1, "", trim: true))
+  |> Enum.to_list()
+
+bingo_numbers =
+  bingo_numbers
+  |> String.split(",", trim: true)
+
+boards
+|> Enum.map(&Enum.join/1)
+|> Enum.map(&String.split(&1, " ", trim: true))
+|> Enum.chunk_every(5)
+
+# Enum.reduce_while(bingo_numbers, boards)
+```
+
+```elixir
+b = [
+  ["22", "13", "17", "11", "0"],
+  ["8", "2", "23", "4", "24"],
+  ["21", "9", "14", "16", "7"],
+  ["6", "10", "3", "18", "5"],
+  ["1", "12", "20", "15", "19"]
+]
+
+Enum.reduce_while(b, :no_win, fn row, acc ->
+  case Enum.reject(row, &(&1 == "*")) do
+    [] -> {:halt, :win}
+    _ -> {:cont, :no_win}
+  end
+end)
+```
+
+```elixir
+b = [
+  ["22", "13", "17", "11", "0"],
+  ["8", "2", "23", "4", "24"],
+  ["21", "9", "14", "16", "7"],
+  ["6", "10", "3", "18", "5"],
+  ["1", "12", "20", "15", "19"]
+]
+
+b
+|> Enum.zip()
+|> Enum.map(&Tuple.to_list/1)
+|> Enum.concat(b)
+```
+
+```elixir
+winner = [
+  ["2", "3", "*"],
+  ["1", "2", "*"],
+  ["5", "3", "*"]
+]
+
+winner
+|> Enum.concat()
+|> Enum.reject(&(&1 == "*"))
+|> Enum.map(&String.to_integer/1)
+|> Enum.sum()
+|> then(fn total_sum -> total_sum * 2 end)
+```
