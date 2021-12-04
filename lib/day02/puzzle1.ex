@@ -6,38 +6,29 @@ defmodule Adventofcode2021.Day02.Puzzle1 do
     |> File.stream!([:utf8], :line)
     |> convert_input()
     |> follow_course()
-    |> transform_result()
+    |> then(fn {h_pos, depth} -> h_pos * depth end)
   end
 
   def convert_input(stream) do
     stream
     |> Stream.map(&String.split(&1, [" ", "\n"], trim: true))
-    |> Stream.map(&parse_line/1)
+    |> Stream.map(fn [action, length] ->
+      {String.to_atom(action), String.to_integer(length)}
+    end)
     |> Enum.to_list()
   end
 
   def follow_course(course) do
     course
-    |> Enum.reduce({0, 0}, &move/2)
-  end
+    |> Enum.reduce({_h_pos = 0, _depth = 0}, fn
+      {:forward, length}, {h_pos, depth} ->
+        {h_pos + length, depth}
 
-  defp parse_line([action, length]) do
-    {String.to_existing_atom(action), String.to_integer(length)}
-  end
+      {:down, length}, {h_pos, depth} ->
+        {h_pos, depth + length}
 
-  defp move({:forward, length}, {h_pos, depth}) do
-    {h_pos + length, depth}
-  end
-
-  defp move({:down, length}, {h_pos, depth}) do
-    {h_pos, depth + length}
-  end
-
-  defp move({:up, length}, {h_pos, depth}) do
-    {h_pos, depth - length}
-  end
-
-  defp transform_result({h_pos, depth}) do
-    h_pos * depth
+      {:up, length}, {h_pos, depth} ->
+        {h_pos, depth - length}
+    end)
   end
 end

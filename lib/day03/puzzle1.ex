@@ -13,15 +13,16 @@ defmodule Adventofcode2021.Day03.Puzzle1 do
   def count_most_common(stream) do
     stream
     |> Stream.map(&String.trim/1)
-    |> Stream.map(&(String.split(&1, "", trim: true)))
+    |> Stream.map(&String.split(&1, "", trim: true))
     |> Stream.zip()
     |> Stream.map(&Tuple.to_list/1)
     |> Stream.map(fn list ->
-       freq = Enum.frequencies(list)
-       cond do
+      freq = Enum.frequencies(list)
+
+      cond do
         freq["0"] > freq["1"] -> "0"
         freq["0"] <= freq["1"] -> "1"
-       end
+      end
     end)
     |> Enum.to_list()
   end

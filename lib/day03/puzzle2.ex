@@ -1,5 +1,4 @@
 defmodule Adventofcode2021.Day03.Puzzle2 do
-
   @default_path "lib/day03/input.txt"
 
   def binary_diagnostic(path \\ @default_path) do
@@ -14,7 +13,7 @@ defmodule Adventofcode2021.Day03.Puzzle2 do
   def convert_input(stream) do
     stream
     |> Stream.map(&String.trim/1)
-    |> Stream.map(&(String.split(&1, "", trim: true)))
+    |> Stream.map(&String.split(&1, "", trim: true))
     |> Enum.to_list()
   end
 

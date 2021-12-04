@@ -17,19 +17,16 @@ defmodule Adventofcode2021.Day01.Puzzle1 do
 
   def count_depth_increases(measures) do
     measures
-    |> Enum.reduce({0, -1}, &detect_increased/2)
+    |> Enum.reduce({_count = 0, _last = -1}, fn
+      measure, {count, -1} ->
+        {count, measure}
+
+      measure, {count, last} when measure > last ->
+        {count + 1, measure}
+
+      measure, {count, _last} ->
+        {count, measure}
+    end)
     |> elem(0)
-  end
-
-  defp detect_increased(measure, {count, -1}) do
-    {count, measure}
-  end
-
-  defp detect_increased(measure, {count, last}) when measure > last do
-    {count + 1, measure}
-  end
-
-  defp detect_increased(measure, {count, _last}) do
-    {count, measure}
   end
 end

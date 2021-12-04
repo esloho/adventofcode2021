@@ -29,7 +29,6 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
   end
 
   describe "get_filter_char_at/2" do
-
     @input [
       ["0", "0"],
       ["1", "1"],
@@ -55,7 +54,6 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
   end
 
   describe "find_oxygen_gen_rating/1" do
-
     test "returns number in decimal if last element" do
       list = [["0", "0", "1", "0", "0"]]
 
@@ -66,7 +64,7 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
       list = [
         ["0", "0", "1", "0", "0"],
         ["1", "1", "1", "1", "0"],
-        ["1", "0", "1", "1", "0"],
+        ["1", "0", "1", "1", "0"]
       ]
 
       assert Puzzle2.find_oxygen_gen_rating(list) == 30
@@ -74,7 +72,6 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
   end
 
   describe "find_co2_scrubber_rating/1" do
-
     test "returns number in decimal if last element" do
       list = [["0", "0", "1", "0", "0"]]
 
@@ -85,7 +82,7 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
       list = [
         ["0", "0", "1", "0", "0"],
         ["1", "1", "1", "1", "0"],
-        ["1", "0", "1", "1", "0"],
+        ["1", "0", "1", "1", "0"]
       ]
 
       assert Puzzle2.find_co2_scrubber_rating(list) == 4
@@ -93,7 +90,6 @@ defmodule Adventofcode2021.Day03.Puzzle2Test do
   end
 
   describe "binary_diagnostic/1" do
-
     test "return oxygen rating multiplied by co2 rating" do
       assert Puzzle2.binary_diagnostic(@path) == 230
     end
