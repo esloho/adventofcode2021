@@ -82,9 +82,6 @@ transposed_list =
   list_numbers
   |> Enum.zip()
   |> Enum.map(&Tuple.to_list/1)
-  ## |> Stream.map(fn list -> Enum.frequencies(list) end)
-  # |> Stream.map(fn freq -> if(freq["0"] > freq["1"], do: "0", else: "1") end)
-  # |> Enum.to_list()
   |> IO.inspect(label: "TRANSPOSE")
 
 freq =
@@ -94,9 +91,4 @@ freq =
   |> IO.inspect(label: "FREQ")
 
 filter_char = if freq["0"] > freq["1"], do: "0", else: "1"
-```
-
-```elixir
-list_numbers
-|> Enum.filter(fn number -> Enum.at(number, 0) == filter_char end)
 ```
