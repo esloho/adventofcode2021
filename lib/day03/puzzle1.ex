@@ -1,6 +1,8 @@
 defmodule Adventofcode2021.Day03.Puzzle1 do
   @default_path "lib/day03/input.txt"
 
+  alias Adventofcode2021.Utils.Matrix
+
   def binary_diagnostic(path \\ @default_path) do
     most_common_bits =
       path
@@ -14,9 +16,9 @@ defmodule Adventofcode2021.Day03.Puzzle1 do
     stream
     |> Stream.map(&String.trim/1)
     |> Stream.map(&String.split(&1, "", trim: true))
-    |> Stream.zip()
-    |> Stream.map(&Tuple.to_list/1)
-    |> Stream.map(fn list ->
+    |> Enum.to_list()
+    |> Matrix.transpose()
+    |> Enum.map(fn list ->
       freq = Enum.frequencies(list)
 
       cond do
@@ -24,7 +26,6 @@ defmodule Adventofcode2021.Day03.Puzzle1 do
         freq["0"] <= freq["1"] -> "1"
       end
     end)
-    |> Enum.to_list()
   end
 
   def calculate_gamma_rate(most_common) do

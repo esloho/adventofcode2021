@@ -1,6 +1,8 @@
 defmodule Adventofcode2021.Day03.Puzzle2 do
   @default_path "lib/day03/input.txt"
 
+  alias Adventofcode2021.Utils.Matrix
+
   def binary_diagnostic(path \\ @default_path) do
     list_numbers =
       path
@@ -43,8 +45,7 @@ defmodule Adventofcode2021.Day03.Puzzle2 do
 
   def get_filter_char_at(list_numbers, pos, search_fun) do
     list_numbers
-    |> Enum.zip()
-    |> Enum.map(&Tuple.to_list/1)
+    |> Matrix.transpose()
     |> Enum.at(pos)
     |> Enum.frequencies()
     |> search_fun.()

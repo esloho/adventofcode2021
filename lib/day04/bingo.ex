@@ -1,5 +1,7 @@
 defmodule Adventofcode2021.Day04.Bingo do
 
+  alias Adventofcode2021.Utils.Matrix
+
   def find_winner_board({bingo_numbers, initial_boards}) do
     Enum.reduce_while(bingo_numbers, initial_boards, fn number, boards ->
       result =
@@ -51,8 +53,7 @@ defmodule Adventofcode2021.Day04.Bingo do
   def check_win(board) do
     all_rows =
       board
-      |> Enum.zip()
-      |> Enum.map(&Tuple.to_list/1)
+      |> Matrix.transpose()
       |> Enum.concat(board)
 
     Enum.reduce_while(all_rows, :no_win, fn row, _ ->
