@@ -1,0 +1,67 @@
+# Day 05
+
+## Puzzle 1
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+```
+
+```elixir
+input = Kino.Input.textarea("Please type your input:")
+```
+
+```elixir
+defmodule Points do
+  def fill_middle_points(line) do
+    case line do
+      [[x, y], [x, z]] ->
+        Enum.reduce(z..y, [], fn n, list ->
+          [[x, n] | list]
+        end)
+
+      [[x, y], [z, y]] ->
+        Enum.reduce(z..x, [], fn n, list ->
+          [[n, y] | list]
+        end)
+
+      _diagonal_line ->
+        []
+    end
+  end
+
+  def count_common_points(point_list) do
+    point_list
+    |> Enum.concat()
+    |> Enum.frequencies()
+    |> Enum.to_list()
+  end
+end
+
+_example_input = """
+0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2
+"""
+
+input
+|> Kino.Input.read()
+|> String.split("\n", trim: true)
+|> Enum.map(fn p ->
+  p
+  |> String.split([" -> ", ","], trim: true)
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.chunk_every(2)
+end)
+|> Enum.map(&Points.fill_middle_points(&1))
+|> Points.count_common_points()
+|> Enum.count(fn {_point, occurrances} -> occurrances >= 2 end)
+```
