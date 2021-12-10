@@ -1,0 +1,79 @@
+# Day 6
+
+## Setup
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+```
+
+```elixir
+input = Kino.Input.textarea("Please type your input:")
+```
+
+```elixir
+example_input = """
+3,4,3,1,2
+"""
+
+# input
+# |> Kino.Input.read()
+fishes =
+  example_input
+  |> String.split(["\n", ","], trim: true)
+  |> Enum.map(&String.to_integer/1)
+```
+
+## Puzzle 1
+
+```elixir
+defmodule Lanterfishes do
+  def create_new_fishes(fishes) do
+    new_count = Enum.count(fishes, &(&1 == 0))
+    List.duplicate(8, new_count)
+  end
+
+  def advance_internal_timer(0), do: 6
+  def advance_internal_timer(fish), do: fish - 1
+end
+
+Enum.reduce(1..18, fishes, fn _day, fishes ->
+  fishes
+  |> Enum.map(&Lanterfishes.advance_internal_timer/1)
+  |> Enum.concat(Lanterfishes.create_new_fishes(fishes))
+end)
+|> Enum.count()
+```
+
+## Puzzle 2
+
+```elixir
+defmodule Lanterfishes do
+  def run_days(freqs, days) do
+    Enum.reduce(1..days, freqs, fn _day, freqs ->
+      advance_internal_timer(freqs)
+    end)
+    |> Map.values()
+    |> Enum.sum()
+  end
+
+  defp advance_internal_timer(freqs) do
+    %{
+      0 => Map.get(freqs, 1, 0),
+      1 => Map.get(freqs, 2, 0),
+      2 => Map.get(freqs, 3, 0),
+      3 => Map.get(freqs, 4, 0),
+      4 => Map.get(freqs, 5, 0),
+      5 => Map.get(freqs, 6, 0),
+      6 => Map.get(freqs, 7, 0) + Map.get(freqs, 0, 0),
+      7 => Map.get(freqs, 8, 0),
+      8 => Map.get(freqs, 0, 0)
+    }
+  end
+end
+
+freqs = Enum.frequencies(fishes)
+
+Lanterfishes.run_days(freqs, 256)
+```
