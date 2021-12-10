@@ -1,6 +1,6 @@
 # Day 05
 
-## Puzzle 1
+## Setup
 
 ```elixir
 Mix.install([
@@ -12,17 +12,26 @@ Mix.install([
 input = Kino.Input.textarea("Please type your input:")
 ```
 
+## Puzzle 1
+
 ```elixir
 defmodule Points do
+  def parse_line(line) do
+    line
+    |> String.split([" -> ", ","], trim: true)
+    |> Enum.map(&String.to_integer/1)
+    |> Enum.chunk_every(2)
+  end
+
   def fill_middle_points(line) do
     case line do
-      [[x, y], [x, z]] ->
-        Enum.reduce(z..y, [], fn n, list ->
+      [[x, y1], [x, y2]] ->
+        Enum.reduce(y2..y1, [], fn n, list ->
           [[x, n] | list]
         end)
 
-      [[x, y], [z, y]] ->
-        Enum.reduce(z..x, [], fn n, list ->
+      [[x1, y], [x2, y]] ->
+        Enum.reduce(x2..x1, [], fn n, list ->
           [[n, y] | list]
         end)
 
@@ -39,7 +48,7 @@ defmodule Points do
   end
 end
 
-_example_input = """
+example_input = """
 0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -52,15 +61,89 @@ _example_input = """
 5,5 -> 8,2
 """
 
-input
-|> Kino.Input.read()
+# input
+# |> Kino.Input.read()
+example_input
 |> String.split("\n", trim: true)
-|> Enum.map(fn p ->
-  p
-  |> String.split([" -> ", ","], trim: true)
-  |> Enum.map(&String.to_integer/1)
-  |> Enum.chunk_every(2)
-end)
+|> Enum.map(&Points.parse_line/1)
+|> Enum.map(&Points.fill_middle_points(&1))
+|> Points.count_common_points()
+|> Enum.count(fn {_point, occurrances} -> occurrances >= 2 end)
+```
+
+## Puzzle 2
+
+```elixir
+defmodule Points do
+  def parse_line(line) do
+    line
+    |> String.split([" -> ", ","], trim: true)
+    |> Enum.map(&String.to_integer/1)
+    |> Enum.chunk_every(2)
+  end
+
+  def fill_middle_points(line) do
+    case line do
+      [[x, _y1] = start, [x, _y2] = ending] ->
+        fill_vertical_points(start, ending)
+
+      [[_x1, y] = start, [_x2, y] = ending] ->
+        fill_horizontal_points(start, ending)
+
+      [start, ending] ->
+        fill_diagonal_points(start, ending)
+    end
+  end
+
+  def count_common_points(point_list) do
+    point_list
+    |> Enum.concat()
+    |> Enum.frequencies()
+    |> Enum.to_list()
+  end
+
+  defp fill_vertical_points([x, y1], [x, y2]) do
+    Enum.reduce(y2..y1, [], fn n, list ->
+      [[x, n] | list]
+    end)
+  end
+
+  defp fill_horizontal_points([x1, y], [x2, y]) do
+    Enum.reduce(x2..x1, [], fn n, list ->
+      [[n, y] | list]
+    end)
+  end
+
+  defp fill_diagonal_points([x1, y1], [x2, y2]) do
+    y_list = Enum.to_list(y2..y1)
+
+    {_, points_list} =
+      Enum.reduce(x2..x1, {y_list, []}, fn x, {[y | rest], list} ->
+        {rest, [[x, y] | list]}
+      end)
+
+    points_list
+  end
+end
+
+example_input = """
+0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2
+"""
+
+# input
+# |> Kino.Input.read()
+example_input
+|> String.split("\n", trim: true)
+|> Enum.map(&Points.parse_line/1)
 |> Enum.map(&Points.fill_middle_points(&1))
 |> Points.count_common_points()
 |> Enum.count(fn {_point, occurrances} -> occurrances >= 2 end)
