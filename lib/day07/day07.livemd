@@ -13,10 +13,11 @@ input = Kino.Input.textarea("Please type your input:")
 ```
 
 ```elixir
-_example_input = """
+example_input = """
 16,1,2,0,4,2,7,1,2,14
 """
 
+# example_input
 crabs =
   input
   |> Kino.Input.read()
@@ -36,6 +37,42 @@ Enum.reduce(min..max, {nil, nil}, fn pos, {best_pos, min_cost} ->
     |> Enum.sum()
 
   case {cost, min_cost} do
+    {cost, nil} ->
+      {pos, cost}
+
+    {cost, min_cost} when cost < min_cost ->
+      {pos, cost}
+
+    _ ->
+      {best_pos, min_cost}
+  end
+end)
+```
+
+## Puzzle 2
+
+```elixir
+defmodule Crabs do
+  def estimate_total_cost(crabs, pos) do
+    crabs
+    |> Enum.map(fn crab -> calculate_cost(crab, pos) end)
+    |> Enum.sum()
+  end
+
+  defp calculate_cost(current_pos, current_pos) do
+    0
+  end
+
+  defp calculate_cost(current_pos, new_pos) do
+    dist = abs(current_pos - new_pos)
+    Enum.sum(1..dist)
+  end
+end
+
+{min, max} = Enum.min_max(crabs)
+
+Enum.reduce(min..max, {nil, nil}, fn pos, {best_pos, min_cost} ->
+  case {Crabs.estimate_total_cost(crabs, pos), min_cost} do
     {cost, nil} ->
       {pos, cost}
 
