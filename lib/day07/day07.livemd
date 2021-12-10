@@ -17,10 +17,10 @@ example_input = """
 16,1,2,0,4,2,7,1,2,14
 """
 
-# example_input
 crabs =
-  input
-  |> Kino.Input.read()
+  example_input
+  # input
+  # |> Kino.Input.read()
   |> String.split(["\n", ","], trim: true)
   |> Enum.map(&String.to_integer/1)
 ```
@@ -30,30 +30,20 @@ crabs =
 ```elixir
 {min, max} = Enum.min_max(crabs)
 
-Enum.reduce(min..max, {nil, nil}, fn pos, {best_pos, min_cost} ->
-  cost =
-    crabs
-    |> Enum.map(fn crab -> abs(crab - pos) end)
-    |> Enum.sum()
-
-  case {cost, min_cost} do
-    {cost, nil} ->
-      {pos, cost}
-
-    {cost, min_cost} when cost < min_cost ->
-      {pos, cost}
-
-    _ ->
-      {best_pos, min_cost}
-  end
+min..max
+|> Enum.map(fn pos ->
+  crabs
+  |> Enum.map(fn crab -> abs(crab - pos) end)
+  |> Enum.sum()
 end)
+|> Enum.min()
 ```
 
 ## Puzzle 2
 
 ```elixir
 defmodule Crabs do
-  def estimate_total_cost(crabs, pos) do
+  def estimate_total_cost(pos, crabs) do
     crabs
     |> Enum.map(fn crab -> calculate_cost(crab, pos) end)
     |> Enum.sum()
@@ -71,16 +61,7 @@ end
 
 {min, max} = Enum.min_max(crabs)
 
-Enum.reduce(min..max, {nil, nil}, fn pos, {best_pos, min_cost} ->
-  case {Crabs.estimate_total_cost(crabs, pos), min_cost} do
-    {cost, nil} ->
-      {pos, cost}
-
-    {cost, min_cost} when cost < min_cost ->
-      {pos, cost}
-
-    _ ->
-      {best_pos, min_cost}
-  end
-end)
+min..max
+|> Enum.map(&Crabs.estimate_total_cost(&1, crabs))
+|> Enum.min()
 ```
